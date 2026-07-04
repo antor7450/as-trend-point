@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Secure Checkout | AS Trend Point</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="top-bar">
+
+<a href="cart.html" class="back-btn">
+<i class="fa-solid fa-arrow-left"></i>
+</a>
+
+<div class="logo">
+<img src="images/logo.jpg" alt="AS Trend Point Logo">
+<h2>AS Trend Point</h2>
+</div>
+
+<div class="cart">
+<a href="cart.html">
+<i class="fa-solid fa-cart-shopping"></i>
+<span id="cart-count">0</span>
+</a>
+</div>
+
+</div>
+
+</header>
+
+<div class="checkout-container">
+
+<h2>🛒 Secure Checkout</h2>
+
+<div id="order-summary" class="order-summary">
+
+<h3>🧾 Order Summary</h3>
+
+<div id="order-items"></div>
+
+<hr>
+
+<p class="summary-row">
+<span>Subtotal</span>
+<span id="subtotal">৳0</span>
+</p>
+
+<p class="summary-row">
+
+<span>Delivery Area</span>
+
+<select id="delivery-area">
+
+<option value="60">
+Inside Dhaka (৳60)
+</option>
+
+<option value="120">
+Outside Dhaka (৳120)
+</option>
+
+</select>
+
+</p>
+
+<p class="summary-row">
+<span>Delivery Charge</span>
+<span id="delivery">৳60</span>
+</p>
+
+<p class="summary-row total">
+<b>Total</b>
+<b id="total">৳60</b>
+</p>
+
+</div>
+
+<form id="checkout-form">
+
+<input
+type="text"
+id="name"
+placeholder="👤 Full Name"
+required>
+
+<input
+type="tel"
+id="phone"
+placeholder="📞 Phone Number"
+required>
+
+<textarea
+id="address"
+rows="4"
+placeholder="📍 Full Address"
+required></textarea>
+
+<select id="payment">
+
+<option value="Cash On Delivery">
+💵 Cash On Delivery
+</option>
+
+<option value="bKash">
+🟣 bKash
+</option>
+
+<option value="Nagad">
+🟠 Nagad
+</option>
+
+</select>
+
+<button
+type="button"
+id="place-order">
+
+<i class="fa-solid fa-paper-plane"></i>
+
+Place Order
+
+</button>
+
+<a
+href="cart.html"
+class="buy-btn"
+style="display:block;text-align:center;margin-top:15px;">
+
+← Back to Cart
+
+</a>
+
+</form>
+<script>
+
+// =========================
+// AS Trend Point Checkout V6
+// =========================
+
+// Load Cart
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const orderItems = document.getElementById("order-items");
+const cartCount = document.getElementById("cart-count");
+const subtotalEl = document.getElementById("subtotal");
+const deliveryEl = document.getElementById("delivery");
+const totalEl = document.getElementById("total");
+const deliveryArea = document.getElementById("delivery-area");
+
+// Cart Counter
+function updateCartCount(){
+
+    const totalQty = cart.reduce((sum,item)=>{
+        return sum + (item.quantity || 1);
+    },0);
+
+    cartCount.innerText = totalQty;
+
+}
+
+// Order Summary
+let subtotal = 0;
+
+function renderOrder(){
+
+    orderItems.innerHTML = "";
+
+    subtotal = 0;
+
+    if(cart.length===0){
+
+        orderItems.innerHTML=`
+        <p style="text-align:center;padding:20px;">
+        🛒 Your cart is empty.
+        </p>
+        `;
+
+        return;
+
+    }
+
+    cart.forEach(item=>{
+
+        const price = Number(item.price)||0;
+
+        const qty = item.quantity||1;
+
+        subtotal += price*qty;
+
+        orderItems.innerHTML += `
+
+        <div class="checkout-item">
+
+        <p><b>${item.name}</b></p>
+
+        <p>📏 Size : ${item.size}</p>
+
+        <p>🔢 Quantity : ${qty}</p>
+
+        <p>💰 Price : ৳${price}</p>
+
+        <hr>
+
+        </div>
+
+        `;
+
+    });
+
+    updateTotal();
+
+}
+
+function updateTotal(){
+
+    const delivery = Number(deliveryArea.value);
+
+    subtotalEl.innerText="৳"+subtotal;
+
+    deliveryEl.innerText="৳"+delivery;
+
+    totalEl.innerText="৳"+(subtotal+delivery);
+
+}
+
+deliveryArea.addEventListener("change",updateTotal);
+
+updateCartCount();
+
+renderOrder();
+// =========================
+// PLACE ORDER
+// =========================
+
+document.getElementById("place-order").addEventListener("click", placeOrder);
+
+function placeOrder(){
+
+    if(cart.length===0){
+        alert("🛒 Your cart is empty!");
+        return;
+    }
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const payment = document.getElementById("payment").value;
+
+    if(!name || !phone || !address){
+        alert("⚠ Please fill in all fields.");
+        return;
+    }
+
+    if(!/^01\d{9}$/.test(phone)){
+        alert("⚠ Please enter a valid Bangladeshi phone number.");
+        return;
+    }
+
+    const delivery = Number(deliveryArea.value);
+    const total = subtotal + delivery;
+
+    let message = `🛍️ AS Trend Point Order
+
+👤 Name: ${name}
+📞 Phone: ${phone}
+📍 Address: ${address}
+💳 Payment: ${payment}
+
+━━━━━━━━━━━━━━
+🛒 Order Items
+━━━━━━━━━━━━━━
+
+`;
+
+    cart.forEach((item,index)=>{
+
+        message += `${index+1}. ${item.name}
+📏 Size: ${item.size}
+🔢 Quantity: ${item.quantity}
+💰 Price: ৳${item.price}
+
+`;
+
+    });
+
+    message += `━━━━━━━━━━━━━━
+💵 Subtotal: ৳${subtotal}
+🚚 Delivery: ৳${delivery}
+✅ Total: ৳${total}`;
+
+    window.open(
+        "https://wa.me/8801606642953?text="+encodeURIComponent(message),
+        "_blank"
+    );
+
+    localStorage.removeItem("cart");
+    cart=[];
+
+    updateCartCount();
+
+    setTimeout(()=>{
+        alert("✅ Thank you! Your order has been placed.");
+        location.href="index.html";
+    },500);
+
+}
+// =========================
+// PHONE VALIDATION
+// =========================
+
+const phoneInput = document.getElementById("phone");
+
+phoneInput.addEventListener("input", function(){
+
+    this.value = this.value.replace(/\D/g,"");
+
+    if(this.value.length > 11){
+        this.value = this.value.slice(0,11);
+    }
+
+});
+
+// =========================
+// EMPTY CART PROTECTION
+// =========================
+
+if(cart.length===0){
+
+    document.getElementById("place-order").disabled = true;
+
+    document.getElementById("place-order").innerHTML =
+    '<i class="fa-solid fa-ban"></i> Cart is Empty';
+
+}
+
+// =========================
+// AUTO FOCUS
+// =========================
+
+document.getElementById("name").focus();
+
+// =========================
+// KEEP CART COUNTER UPDATED
+// =========================
+
+window.addEventListener("storage",()=>{
+
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    updateCartCount();
+
+    renderOrder();
+
+});
+
+window.addEventListener("load",()=>{
+
+    updateCartCount();
+
+    renderOrder();
+
+});
+
+console.log("✅ Checkout V6 Loaded");
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>

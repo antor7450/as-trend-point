@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Product Details | AS Trend Point</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="top-bar">
+
+<a href="index.html" class="back-btn">
+<i class="fa-solid fa-arrow-left"></i>
+</a>
+
+<div class="logo">
+<img src="images/logo.jpg" alt="AS Trend Point">
+<h2>AS Trend Point</h2>
+</div>
+
+<a href="cart.html" class="cart">
+<i class="fa-solid fa-cart-shopping"></i>
+<span id="cart-count">0</span>
+</a>
+
+</div>
+
+</header>
+
+<section class="product-details">
+
+<div class="product-gallery">
+
+<img id="main-image"
+src="images/polo1.jpg"
+alt="Product Image">
+
+<div class="thumbs">
+
+<img src="images/polo1.jpg" class="thumb active">
+<img src="images/polo1.jpg" class="thumb">
+<img src="images/polo1.jpg" class="thumb">
+
+</div>
+
+</div>
+
+<div class="details">
+
+<span class="badge">🔥 Best Seller</span>
+
+<div class="stock">✅ In Stock</div>
+
+<h1 id="product-name">
+Premium Polo Navy Stripe
+</h1>
+
+<div class="rating" id="product-rating">
+⭐⭐⭐⭐⭐ (4.9)
+</div>
+
+<p class="old-price" id="old-price">
+৳1650
+</p>
+
+<h2 class="price" id="price">
+৳990
+</h2>
+
+<p class="description" id="description">
+Premium Quality Cotton Polo T-Shirt.<br>
+100% Cotton Fabric.<br>
+Soft & Comfortable.<br>
+Perfect for Everyday Wear.
+</p>
+
+<label>Select Size</label>
+
+<select class="size-select" id="size">
+
+<option value="">Choose Size</option>
+<option>S</option>
+<option>M</option>
+<option>L</option>
+<option>XL</option>
+<option>XXL</option>
+
+</select>
+<div class="action-buttons">
+
+<button class="cart-btn" id="add-cart">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Add to Cart
+
+</button>
+
+<a href="#"
+id="buy-now"
+class="buy-btn">
+
+<i class="fab fa-whatsapp"></i>
+
+Buy Now
+
+</a>
+
+</div>
+
+<div class="delivery-info">
+
+<h3>🚚 Delivery Information</h3>
+
+<p>📍 Inside Dhaka : ৳60</p>
+
+<p>📦 Outside Dhaka : ৳120</p>
+
+<p>⏰ Delivery Time : 2–5 Days</p>
+
+<p>💵 Cash on Delivery Available</p>
+
+</div>
+
+<div class="product-features">
+
+<h3>⭐ Product Features</h3>
+
+<ul>
+
+<li>✔ 100% Premium Cotton</li>
+
+<li>✔ Export Quality</li>
+
+<li>✔ Soft & Comfortable</li>
+
+<li>✔ Regular Fit</li>
+
+<li>✔ Long Lasting Color</li>
+
+<li>✔ Easy Wash</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="related-products">
+
+<h2>You May Also Like</h2>
+
+<div id="related-products" class="product-grid">
+
+</div>
+
+</section>
+
+<script>
+
+// ===============================
+// AS Trend Point V5
+// Product Page
+// ===============================
+
+// ---------- Product Data ----------
+
+const products = [
+{
+id:1,
+name:"Premium Polo Navy Stripe",
+price:990,
+oldPrice:1650,
+image:"images/polo1.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.9)"
+},
+{
+id:2,
+name:"Premium Polo Navy",
+price:1150,
+oldPrice:1750,
+image:"images/polo2.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.8)"
+},
+{
+id:3,
+name:"Premium Polo White",
+price:1190,
+oldPrice:1700,
+image:"images/polo3.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.9)"
+},
+{
+id:4,
+name:"Premium Polo Grey",
+price:990,
+oldPrice:1650,
+image:"images/polo4.jpg",
+rating:"⭐⭐⭐⭐⭐ (5.0)"
+},
+{
+id:5,
+name:"Premium Polo Maroon",
+price:1200,
+oldPrice:1600,
+image:"images/polo5.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.8)"
+},
+{
+id:6,
+name:"Premium Polo Green",
+price:1240,
+oldPrice:1550,
+image:"images/polo6.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.8)"
+},
+{
+id:7,
+name:"Premium Polo Sky Blue",
+price:1260,
+oldPrice:1800,
+image:"images/polo7.jpg",
+rating:"⭐⭐⭐⭐⭐ (4.9)"
+},
+{
+id:8,
+name:"Premium Polo Coffee",
+price:1290,
+oldPrice:1850,
+image:"images/polo8.jpg",
+rating:"⭐⭐⭐⭐⭐ (5.0)"
+}];
+
+// ---------- Cart Counter ----------
+
+function updateCartCount(){
+
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const total = cart.reduce((sum,item)=>{
+
+return sum + (item.quantity || 1);
+
+},0);
+
+const counter = document.getElementById("cart-count");
+
+if(counter){
+
+counter.innerText = total;
+
+}
+
+}
+
+updateCartCount();
+// ===============================
+// LOAD PRODUCT
+// ===============================
+
+const id = Number(new URLSearchParams(location.search).get("id")) || 1;
+
+const product = products.find(p => p.id === id) || products[0];
+
+document.getElementById("product-name").innerText = product.name;
+document.getElementById("price").innerText = "৳" + product.price;
+document.getElementById("old-price").innerText = "৳" + product.oldPrice;
+document.getElementById("product-rating").innerText = product.rating;
+
+const mainImage = document.getElementById("main-image");
+
+mainImage.src = product.image;
+
+document.querySelectorAll(".thumb").forEach(img=>{
+
+img.src = product.image;
+
+img.onclick = function(){
+
+mainImage.src = this.src;
+
+document.querySelectorAll(".thumb").forEach(t=>t.classList.remove("active"));
+
+this.classList.add("active");
+
+};
+
+});
+// ===============================
+// ADD TO CART (V5)
+// ===============================
+
+document.getElementById("add-cart").addEventListener("click", () => {
+
+    const size = document.getElementById("size").value;
+
+    if (!size) {
+        alert("⚠ Please select a size.");
+        return;
+    }
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existing = cart.find(item =>
+        item.name === product.name &&
+        item.size === size
+    );
+
+    if (existing) {
+
+        existing.quantity++;
+
+    } else {
+
+        cart.push({
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            size: size,
+            quantity: 1
+        });
+
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Update Header Counter
+    updateCartCount();
+
+    alert("✅ Product added to cart successfully!");
+
+});
+// ===============================
+// BUY NOW (WhatsApp)
+// ===============================
+
+document.getElementById("buy-now").addEventListener("click", (e) => {
+
+    e.preventDefault();
+
+    const size = document.getElementById("size").value;
+
+    if (!size) {
+        alert("⚠ Please select a size.");
+        return;
+    }
+
+    const message =
+`🛍️ AS Trend Point
+
+Product: ${product.name}
+Size: ${size}
+Price: ৳${product.price}
+
+I want to order this product.`;
+
+    window.open(
+        "https://wa.me/8801606642953?text=" +
+        encodeURIComponent(message),
+        "_blank"
+    );
+
+});
+// ===============================
+// RELATED PRODUCTS (V5)
+// ===============================
+
+const related = document.getElementById("related-products");
+
+related.innerHTML = "";
+
+products
+.filter(item => item.id !== product.id)
+.slice(0, 4)
+.forEach(item => {
+
+    related.innerHTML += `
+
+    <div class="product-card">
+
+        <a href="product.html?id=${item.id}">
+            <img src="${item.image}" alt="${item.name}" loading="lazy">
+        </a>
+
+        <h3>${item.name}</h3>
+
+        <div class="rating">${item.rating}</div>
+
+        <p class="price">৳${item.price}</p>
+
+        <a href="product.html?id=${item.id}" class="buy-btn">
+            View Details
+        </a>
+
+    </div>
+
+    `;
+
+});
+// ===============================
+// AUTO REFRESH CART COUNTER (V5)
+// ===============================
+
+// Page Load
+window.addEventListener("load", () => {
+
+    updateCartCount();
+
+});
+
+// Other tab/page changes
+window.addEventListener("storage", () => {
+
+    updateCartCount();
+
+});
+
+// Keep Counter Synced
+setInterval(updateCartCount, 1000);
+
+// ===============================
+// SAFE LOCAL STORAGE
+// ===============================
+
+try {
+
+    let cart = JSON.parse(localStorage.getItem("cart"));
+
+    if (!Array.isArray(cart)) {
+
+        localStorage.setItem("cart", JSON.stringify([]));
+
+    }
+
+} catch (e) {
+
+    localStorage.setItem("cart", JSON.stringify([]));
+
+}
+
+console.log("✅ Product Page V5 Loaded");
+
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>

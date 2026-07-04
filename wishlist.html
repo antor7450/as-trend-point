@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wishlist | AS Trend Point</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="top-bar">
+
+<a href="index.html" class="back-btn">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+</a>
+
+<div class="logo">
+
+<img src="images/logo.jpg" alt="AS Trend Point">
+
+<h2>AS Trend Point</h2>
+
+</div>
+
+<a href="cart.html" class="cart">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+<span id="cart-count">0</span>
+
+</a>
+
+</div>
+
+</header>
+
+<section class="wishlist-page">
+
+<h1>
+
+❤️ My Wishlist
+
+</h1>
+
+<div id="wishlist-items"
+class="product-grid">
+
+</div>
+
+</section>
+<script>
+
+// =========================
+// PRODUCT LIST
+// =========================
+
+const products = [
+
+{
+id:1,
+name:"Premium Polo Navy Stripe",
+price:990,
+image:"images/polo1.jpg"
+},
+
+{
+id:2,
+name:"Premium Polo Navy",
+price:1150,
+image:"images/polo2.jpg"
+},
+
+{
+id:3,
+name:"Premium Polo White",
+price:1190,
+image:"images/polo3.jpg"
+},
+
+{
+id:4,
+name:"Premium Polo Grey",
+price:990,
+image:"images/polo4.jpg"
+},
+
+{
+id:5,
+name:"Premium Polo Maroon",
+price:1200,
+image:"images/polo5.jpg"
+},
+
+{
+id:6,
+name:"Premium Polo Green",
+price:1240,
+image:"images/polo6.jpg"
+},
+
+{
+id:7,
+name:"Premium Polo Sky Blue",
+price:1260,
+image:"images/polo7.jpg"
+},
+
+{
+id:8,
+name:"Premium Polo Coffee",
+price:1290,
+image:"images/polo8.jpg"
+}
+
+];
+
+// =========================
+// LOAD WISHLIST
+// =========================
+
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+const wishlistBox = document.getElementById("wishlist-items");
+
+if(wishlist.length===0){
+
+wishlistBox.innerHTML=`
+
+<div class="empty-cart">
+
+<h2>❤️ Your Wishlist is Empty</h2>
+
+<p>Add your favourite products first.</p>
+
+<br>
+
+<a href="index.html" class="buy-btn">
+
+Continue Shopping
+
+</a>
+
+</div>
+
+`;
+
+}else{
+
+wishlist.forEach(id=>{
+
+const product = products.find(p=>p.id===id);
+
+if(!product) return;
+
+wishlistBox.innerHTML += `
+
+<div class="product-card">
+
+<img src="${product.image}" alt="${product.name}">
+
+<h3>${product.name}</h3>
+
+<p class="price">৳${product.price}</p>
+
+<a href="product.html?id=${product.id}" class="buy-btn">
+
+View Details
+
+</a>
+
+</div>
+
+`;
+
+});
+
+}
+
+</script>
+<script>
+
+// =========================
+// REMOVE FROM WISHLIST
+// =========================
+
+function removeWishlist(id){
+
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+wishlist = wishlist.filter(item => item !== id);
+
+localStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+location.reload();
+
+}
+
+// Add Remove Button
+document.querySelectorAll("#wishlist-items .product-card").forEach((card,index)=>{
+
+const id = wishlist[index];
+
+card.innerHTML += `
+
+<button
+onclick="removeWishlist(${id})"
+class="remove-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Remove
+
+</button>
+
+`;
+
+});
+
+// =========================
+// CART COUNT
+// =========================
+
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartCount = document.getElementById("cart-count");
+
+if(cartCount){
+
+cartCount.innerText = cart.length;
+
+}
+
+</script>
+<script>
+
+// =========================
+// MOVE TO CART
+// =========================
+
+function moveToCart(id){
+
+const product = products.find(p => p.id === id);
+
+if(!product) return;
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({
+
+name: product.name,
+price: product.price,
+image: product.image,
+size: "Not Selected",
+quantity: 1
+
+});
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+removeWishlist(id);
+
+}
+
+// =========================
+// ADD BUTTONS
+// =========================
+
+document.querySelectorAll("#wishlist-items .product-card").forEach((card,index)=>{
+
+const id = wishlist[index];
+
+card.innerHTML += `
+
+<div class="action-buttons">
+
+<button
+onclick="moveToCart(${id})"
+class="cart-btn">
+
+<i class="fa-solid fa-cart-shopping"></i>
+
+Move to Cart
+
+</button>
+
+<a
+href="https://wa.me/8801606642953?text=I want to order Product ID ${id}"
+class="buy-btn">
+
+<i class="fab fa-whatsapp"></i>
+
+Buy Now
+
+</a>
+
+</div>
+
+`;
+
+});
+
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>
